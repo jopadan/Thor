@@ -68,24 +68,46 @@ class THOR_API BigSprite : public sf::Drawable, public sf::Transformable
 	public:
 		/// @brief Default constructor
 		/// @details Creates an empty sprite that uses no texture.
-									BigSprite();
+							BigSprite();
 
 		/// @brief Construct from texture
 		/// @details Creates a sprite that uses the specified texture. The referenced texture must remain valid during the lifetime
 		///  of this sprite.
-		explicit					BigSprite(const BigTexture& texture);
+		explicit				BigSprite(const BigTexture& texture);
+
+		/// @brief Construct the sprite from sub-rectangle of a source texture
+		/// @details Creates a sprite that uses the specified sub-rectangle of a texture. The referenced texture must remain valid during the lifetime
+		///  of this sprite.
+		BigSprite(const BigTexture& texture, const sf::IntRect& rectangle);
 
 		/// @brief Sets the texture which is used for this sprite.
 		/// @details The referenced texture must remain valid during the lifetime of this sprite.
-		void						setTexture(const BigTexture& texture);
+    		void 					setTexture(const BigTexture& texture, bool resetRect = false);
+
+    		/// @brief Set the sub-rectangle of the texture that the sprite will display
+    		///
+    		/// @details The texture rect is useful when you don't want to display
+    		/// the whole texture, but rather a part of it.
+    		/// By default, the texture rect covers the entire texture.
+		void					setTextureRect(const sf::IntRect& rectangle);
+
+    		/// @brief Get the source texture of the sprite
+    		///
+    		/// @details If the sprite has no source texture, a NULL pointer is returned.
+    		/// The returned pointer is const, which means that you can't
+    		/// modify the texture when you retrieve it with this function.
+    		const BigTexture* 			getTexture() const;
+
+    		/// @brief Get the sub-rectangle of the texture displayed by the sprite
+    		const sf::IntRect& 			getTextureRect() const;
 
 		/// @brief Sets the sprite's color.
 		///
-		void						setColor(const sf::Color& color);
+		void					setColor(const sf::Color& color);
 
 		/// @brief Returns the sprite's color.
 		///
-		sf::Color					getColor() const;
+		sf::Color				getColor() const;
 
 		/// @brief Returns the local bounding rect, starting at (0,0).
 		///
@@ -102,13 +124,23 @@ class THOR_API BigSprite : public sf::Drawable, public sf::Transformable
 		// Overrides sf::Drawable::draw()
 		virtual void				draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
+		/// @brief Update the vertices' positions
+		void updatePositions();
+
+		/// @brief Update the vertices' texture coordinates
+		void updateTexCoords();
+
+
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 	// Private variables
 	private:
 		std::vector<sf::Sprite>		mSplitSprites;
-		sf::Vector2f				mSize;
-		sf::Color					mColor;
+		sf::Vector2f			mSize;
+		sf::Color			mColor;
+		sf::Vertex 			mVertices[4];
+		const BigTexture* 		mTexture;
+		sf::IntRect 			mTextureRect;
 };
 
 /// @}

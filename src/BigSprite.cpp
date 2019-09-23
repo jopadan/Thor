@@ -43,6 +43,8 @@ BigSprite::BigSprite()
 , mSplitSprites()
 , mSize(0.f, 0.f)
 , mColor(sf::Color::White)
+, mTexture(NULL)
+, mTextureRect()
 {
 }
 
@@ -52,13 +54,43 @@ BigSprite::BigSprite(const BigTexture& texture)
 , mSplitSprites()
 , mSize()
 , mColor(sf::Color::White)
+, mTexture(NULL)
+, mTextureRect()
 {
 	setTexture(texture);
 }
 
-void BigSprite::setTexture(const BigTexture& texture)
+BigSprite::BigSprite(const BigTexture& texture, const sf::IntRect& rectangle)
+: sf::Drawable()
+, sf::Transformable()
+, mSplitSprites()
+, mSize()
+, mColor(sf::Color::White)
+, mTexture(NULL)
 {
+	setTexture(texture);
+	setTextureRect(rectangle);
+}
+
+
+void BigSprite::setTexture(const BigTexture& texture, bool resetRect)
+{
+	if (resetRect || (!mTexture && (mTextureRect == sf::IntRect())))
+	    setTextureRect(sf::IntRect(0, 0, texture.getSize().x, texture.getSize().y));
+
+	mTexture = &texture;
+
 	mSize = texture.fillSprites(mColor, mSplitSprites);
+}
+
+void BigSprite::setTextureRect(const sf::IntRect& rectangle)
+{
+	if (rectangle != mTextureRect)
+	{
+	    mTextureRect = rectangle;
+	    updatePositions();
+	    updateTexCoords();
+	}
 }
 
 void BigSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -81,6 +113,16 @@ sf::Color BigSprite::getColor() const
 	return mColor;
 }
 
+const BigTexture* BigSprite::getTexture() const
+{
+	return mTexture;
+}
+
+const sf::IntRect& BigSprite::getTextureRect() const
+{
+	return mTextureRect;
+}
+
 sf::FloatRect BigSprite::getLocalBounds() const
 {
 	return sf::FloatRect(0.f, 0.f, mSize.x, mSize.y);
@@ -89,6 +131,29 @@ sf::FloatRect BigSprite::getLocalBounds() const
 sf::FloatRect BigSprite::getGlobalBounds() const
 {
 	return getTransform().transformRect(getLocalBounds());
+}
+
+void BigSprite::updatePositions()
+{
+	sf::FloatRect bounds = getLocalBounds();
+
+	mVertices[0].position = sf::Vector2f(0, 0);
+	mVertices[1].position = sf::Vector2f(0, bounds.height);
+	mVertices[2].position = sf::Vector2f(bounds.width, 0);
+	mVertices[3].position = sf::Vector2f(bounds.width, bounds.height);
+}
+
+void BigSprite::updateTexCoords()
+{
+	float left   = static_cast<float>(mTextureRect.left);
+	float right  = left + mTextureRect.width;
+	float top    = static_cast<float>(mTextureRect.top);
+	float bottom = top + mTextureRect.height;
+
+	mVertices[0].texCoords = sf::Vector2f(left, top);
+	mVertices[1].texCoords = sf::Vector2f(left, bottom);
+	mVertices[2].texCoords = sf::Vector2f(right, top);
+	mVertices[3].texCoords = sf::Vector2f(right, bottom);
 }
 
 } // namespace thor
