@@ -117,13 +117,12 @@ class THOR_API BigSprite : public sf::Drawable, public sf::Transformable
 		///
 		sf::FloatRect				getGlobalBounds() const;
 
+		// Overrides sf::Drawable::draw()
+		virtual void				draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	// ---------------------------------------------------------------------------------------------------------------------------
 	// Private member functions
 	private:
-		// Overrides sf::Drawable::draw()
-		virtual void				draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
 		/// @brief Update the vertices' positions
 		void updatePositions();
 
