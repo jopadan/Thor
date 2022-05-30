@@ -1,7 +1,7 @@
 #################################################################################
 ##
 ## Thor C++ Library
-## Copyright (c) 2011-2021 Jan Haller
+## Copyright (c) 2011-2022 Jan Haller
 ##
 ## This software is provided 'as-is', without any express or implied
 ## warranty. In no event will the authors be held liable for any damages
@@ -83,12 +83,12 @@ endif()
 
 
 # Compiler-specific flags and definitions
-if(CMAKE_COMPILER_IS_GNUCXX)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+set(CMAKE_CXX_STANDARD 11)
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	set(THOR_CLANG_STDLIB "" CACHE STRING "Chose standard library (libstdc++ or libc++) or leave empty for default")
 
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-switch -Wno-logical-op-parentheses")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-switch -Wno-logical-op-parentheses")
 	if(NOT THOR_CLANG_STDLIB STREQUAL "")
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=${THOR_CLANG_STDLIB}")
 	endif()

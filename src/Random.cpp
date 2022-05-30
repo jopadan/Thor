@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 //
 // Thor C++ Library
-// Copyright (c) 2011-2021 Jan Haller
+// Copyright (c) 2011-2022 Jan Haller
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -76,13 +76,13 @@ namespace
 			}
 
 			// Return minimal value (compliant to Std.Random)
-			static sf::Uint32 min()
+			static constexpr sf::Uint32 min()
 			{
 				return 0;
 			}
 
 			// Return maximal value (compliant to Std.Random)
-			static sf::Uint32 max()
+			static constexpr sf::Uint32 max()
 			{
 				return 0xffffffff;
 			}
